@@ -1,0 +1,29 @@
+<div class="actions">
+	<div class="btn-group">
+
+		{{#if allowUpdate}}
+			<button class="btn btn-primary" {{action "update" model }}>
+				<span class="glyphicon glyphicon-pencil"></span>
+			</button>
+		{{/if}}
+
+		{{#if allowDelete}}
+			<button class="btn btn-danger" {{action "delete" model }}>
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
+		{{/if}}
+	</div>	
+
+	{{#if extraActions}}
+	<div class="btn-group">
+		{{#each extraActions as |action|}}
+		<button class="btn btn-{{action.btnClass}}" {{action action.action model }}>
+			{{#if action.label}}{{action.label}}{{/if}}	
+			{{#if action.icon}}<span class="{{action.label}}"></span>{{/if}}
+		</button>
+		{{/each}}
+	</div>
+	{{/if}}
+
+	{{yield}}
+</div>

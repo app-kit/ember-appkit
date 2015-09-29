@@ -1,0 +1,71 @@
+
+<div class="app-list-nested">
+
+	{{#if formModel}}
+		{{component formComponent model=formModel title=formTitle titleField=modelTitleField formSubmitted="formSubmitted" parentModel=parentModel parentField=parentField modelParentField=modelParentField}}
+	{{/if}}
+
+	{{yield}}
+	
+	<div class={{tableWrapClass}}>	
+	<div class="box box-info">
+		<div class="box-header with-border">
+
+			<h4 class="box-title pull-left" style="padding-right: 50px;">{{title}}</h4>
+
+			{{#if allowCreate}}
+				<button class="btn btn-primary btn-create btn-sm pull-left" {{action "create" }}>
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+			{{/if}}
+
+			<div class="box-tools">
+				<div class="pager-wrap">
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="box-body table-responsive no-padding">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+					{{#each columnList as |column|}}
+						<th>
+							{{app-list-column model=model field=column.field title=column.title sort=column.sort }}
+						</th>
+
+					{{/each}}
+					{{#if actionColumnComponent}}
+					<th>Actions</th>
+					{{/if}}
+					</tr>
+				</thead>	
+
+				<tbody>
+					{{#each models as |model|}}
+					<tr>
+						{{#each columnList as |column|}}
+						<td>
+							{{#if column.valueComponent}}
+								{{component column.valueComponent model=model field=column.field settings=field.settings }}	
+							{{else}}
+								{{app-list-value model=model field=column.field}}
+							{{/if}}
+						</td>
+						{{/each}}
+
+						{{#if actionColumnComponent}}
+						<td>
+							{{component actionColumnComponent model=model allowUpdate=allowUpdate allowDelete=allowDelete}}
+						</td>
+						{{/if}}
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+	</div> <!-- ./ list box -->
+	</div> <!-- end of box wrapper -->
+	
+</div>

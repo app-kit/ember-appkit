@@ -1,0 +1,70 @@
+<div class="admin-form">
+	
+	{{#em-form submitButton=false model=model action="submit"}}	
+	<div class="box box-primary">
+		<div class="box-header with-border">
+			{{#if title}}
+			<div class="box-title">
+				{{title}}
+			</div>
+			{{/if}}
+
+			<div class="box-body">
+				{{#if errors}}
+				<div class="alert alert-danger">
+					<ul>
+						{{#each errors as |error|}}
+						<li>
+							{{error.message}}
+							{{#if error.code}} ({{error.code}}){{/if}}
+						</li>
+						{{/each}}
+					</ul>
+				</div>
+				{{/if}}
+
+					{{#if hasBlock}}
+						{{yield}}
+					{{else}}
+
+						{{#each fieldList as |field|}}
+
+							{{#if field.component}}
+								{{component field.component field=field model=model}}
+							{{/if}}
+
+							{{#unless field.component}}
+								{{#if (eq field.type "string")}}
+									{{em-input property=field.field label=field.label placeholder=field.placeholder}}
+								{{/if}}
+
+								{{#if (eq field.type "boolean")}}
+									{{em-checkbox label=field.label property=field.field}}
+								{{/if}}
+
+								{{#if (eq field.type "relationship")}}
+									{{app-form-relationship model=model field=field.field label=field.label}}
+								{{/if}}
+							{{/unless}}
+
+						{{/each}}
+
+					{{/if}}
+
+			</div>
+		</div> <!-- ./.box-body -->
+
+		<div class="box-footer">
+			{{#if loading}}
+			<div class="" style="position: relative;">
+				{{ember-spinner}}
+			</div>
+			{{else}}
+			<button class="btn btn-default" {{action "formCancelled" }}>Cancel</button>
+			<input disabled={{model.isntValid}} type="submit" class="btn btn-info" value="Save">
+			{{/if}}
+		</div>
+	</div>  <!-- ./.box -->
+	{{/em-form}}
+
+</div> <!-- ./.admin-form -->

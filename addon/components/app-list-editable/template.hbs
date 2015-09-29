@@ -1,0 +1,107 @@
+
+<div class="app-list">
+	
+	{{#if updateModelIsLoading}}
+	<div class="" style="position: relative;">
+		{{ember-spinner}}
+	</div>
+	{{/if}}
+	{{#if formModel}}
+		{{component formComponent model=formModel title=formTitle titleField=modelTitleField formSubmitted="formSubmitted"}}
+	{{/if}}
+
+	{{yield}}
+	
+	<div class="table-wrap" class={{tableWrapClass}}>
+		<div class="box table-box">
+			<div class="box-header with-border" style="min-height: 42px;">
+				<div class="actions">
+					<div class="btn-group">
+						{{#if allowCreate}}
+							<button class="btn btn-primary btn-create" {{action "create" }}>
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+						{{/if}}
+					</div>
+				</div>
+
+				
+				<div class="box-tools">
+		      <div class="input-group" style="width: 150px;">
+		        <input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+		        <div class="input-group-btn">
+		          <button class="btn btn-sm btn-default">
+		          	<i class="glyphicon glyphicon-search"></i>
+		          </button>
+		        </div>
+		      </div>
+		    </div>
+			</div>
+
+			<div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+						{{#each columnList as |column|}}
+							<th>
+								{{app-list-column model=model field=column.field title=column.title sort=column.sort }}
+							</th>
+
+						{{/each}}
+						{{#if actionColumnComponent}}
+						<th>Actions</th>
+						{{/if}}
+						</tr>
+					</thead>	
+
+					<tbody>
+
+						{{#if models.loading}}
+						<div style="position: relative;">
+							{{ember-spinner}}
+						</div>
+						{{/if}}
+				
+						{{#unless models.loading}}
+						
+						{{#unless models.length}}
+						<tr>
+							<td>No items found.</td>
+						</tr>
+						{{/unless}}
+
+						{{#each models as |model|}}
+						<tr>
+							{{#each columnList as |column|}}
+							<td>
+								{{#if column.valueComponent}}
+									{{component column.valueComponent model=model field=column.field settings=field.settings }}	
+								{{else}}
+									{{app-list-value model=model field=column.field}}
+								{{/if}}
+							</td>
+							{{/each}}
+
+							{{#if actionColumnComponent}}
+							<td>
+								{{#unless updateModelIsLoading}}
+								{{component actionColumnComponent model=model allowUpdate=allowUpdate allowDelete=allowDelete}}
+								{{/unless}}
+							</td>
+							{{/if}}
+						</tr>
+						{{/each}}
+
+						{{/unless}}
+					</tbody>
+				
+				</table>
+			</div>
+		</div> <!-- ./ .table-box -->
+
+		<div class="pager-wrap">
+			{{page-numbers content=models currentPage=page totalPages=totalPages}}
+		</div>
+	</div>
+
+</div>

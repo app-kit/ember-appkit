@@ -1,0 +1,21 @@
+<span class="title">
+	{{title}}
+</span>
+
+{{yield}}
+
+{{#if sort}}
+<div class="sorter" style="display: inline-block;">
+	<div class="sort-up">
+		<a href="#" {{action "sort" field "asc" }}>
+			<span class="glyphicon glyphicon-chevron-up"></span>
+		</a>
+	</div>
+
+	<div class="sort-down">
+		<a href="#" {{action "sort" field "desc" }}>
+			<span class="glyphicon glyphicon-chevron-down"></span>
+		</a>
+	</div>
+</div>
+{{/if}}

@@ -1,0 +1,39 @@
+<div class="app-form-relationship">
+	{{#if loading}}
+		<div class="" style="position: relative;">
+			{{ember-spinner}}
+		</div>
+	{{else}}
+		{{#if error}}
+			<div class="alert alert-danger">
+				{{error}}
+			</div>
+		{{else}}
+			<div class="form-group">
+		    <label class="col-sm-2 control-label">{{label}}</label>
+		    <div class="col-sm-10">
+					{{#if many}}
+					<div class="select-wrap">
+						{{#each options as |option|}}
+						<label class="checkbox">
+							{{#if option.enabled}}
+								<input checked="checked" type="checkbox" value={{option.key}} onclick={{action "itemSelected" option.key}} /> {{option.label}}
+							{{else}}
+								<input type="checkbox" value={{option.key}} onclick={{action "itemSelected" option.key}} /> {{option.label}}
+							{{/if}}
+						</label>
+						{{/each}}
+					</div>
+					{{else}}
+						{{#x-select value=selectedOption action="selectionChanged"}}
+							{{#each options as |option|}}
+							{{#x-option value=option.key}}{{option.label}}{{/x-option}}
+							{{/each}}
+						{{/x-select}}
+					{{/if}}
+		    </div>
+		  </div>
+		{{/if}}
+	{{/if}}
+
+</div>
