@@ -36,28 +36,29 @@ export default DS.JSONAPIAdapter.extend({
 
   buildURL: function(modelName, id, snapshot, requestType, query) {
     query = query || {};
-    query.admin = "true";
-    return this._super(modelName, id,  snapshot,  requestType, query);
+
+    // If "query" is set in query, turn it to json.
+    if (typeof query === "object" && query.query && typeof query.query === "object") {
+      query.query = JSON.stringify(query.query);
+    }
+    
+    let url = this._super(modelName, id,  snapshot,  requestType, query);
+    return url;
   },
 
-  ajaxOptions() {
-    let options = this._super(...arguments);
+  ajaxOptions(url, type, options) {
+    // Call super to build up ajax options.
+    let ajaxOptions = this._super(url, type, options);
 
+    // If the session is authenticated, add an Authentication header.
     let session = this.container.lookup("session:main");
-    if (!(session && session.isAuthenticated)) {
-      return options;
+    if (session && session.isAuthenticated) {
+      let token = session.get("authenticated").token;
+      ajaxOptions.headers = ajaxOptions.headers || {};
+      ajaxOptions.headers.Authentication = token;
     }
 
-    let token = session.get("authenticated").token;
-
-    let { beforeSend } = options;
-    options.beforeSend = (xhr) => {
-      xhr.setRequestHeader("Authentication", token);
-      if (beforeSend) {
-        beforeSend(xhr);
-      }
-    };
-    return options;
+    return ajaxOptions;
   },
 
 });

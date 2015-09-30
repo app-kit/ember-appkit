@@ -1,0 +1,13 @@
+<div class="btn-group">
+	{{#unless (eq index 0)}}
+	<button class="btn btn-sm btn-success" disabled={{updatingOrder}} {{action "orderUp" index model}}>
+		<span class="glyphicon glyphicon-chevron-up"></span>
+	</button>
+	{{/unless}}
+	
+	{{#unless isLast}}
+	<button class="btn btn-sm btn-danger" disabled={{updatingOrder}} {{action "orderDown" index model}}>
+		<span class="glyphicon glyphicon-chevron-down"></span>
+	</button>
+	{{/unless}}
+</div>

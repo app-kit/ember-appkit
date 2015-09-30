@@ -1,0 +1,68 @@
+<table class="table table-hover">
+	<thead>
+		<tr>
+		{{#each columns as |column|}}
+			<th>
+				{{app-list-column model=model field=column.field title=column.title sort=column.sort}}
+			</th>
+
+		{{/each}}
+
+		{{#if canOrder}}
+		<th>Ordering</th>
+		{{/if}}
+
+		{{#if actionColumnComponent}}
+		<th>Actions</th>
+		{{/if}}
+		</tr>
+	</thead>	
+
+	<tbody>
+
+		{{#if models.loading}}
+		<div style="position: relative;">
+			{{ember-spinner}}
+		</div>
+		{{/if}}
+
+		{{#unless models.loading}}
+		
+		{{#unless models.length}}
+		<tr>
+			<td>No items found.</td>
+		</tr>
+		{{/unless}}
+
+		{{#each models as |model index|}}
+		<tr>
+			{{#each columns as |column|}}
+			<td>
+				{{#if column.valueComponent}}
+					{{component column.valueComponent model=model field=column.field settings=field.settings }}	
+				{{else}}
+					{{app-list-value model=model field=column.field}}
+				{{/if}}
+			</td>
+			{{/each}}
+
+			{{#if canOrder}}
+			<td class="order-td">
+				{{app-list-ordering model=model index=index updatingOrdering=updatingOrdering totalModels=totalModels}}
+			</td>
+			{{/if}}
+			
+			{{#if actionColumnComponent}}
+			<td>
+				{{#unless updateModelIsLoading}}
+				{{component actionColumnComponent model=model allowUpdate=allowUpdate allowDelete=allowDelete}}
+				{{/unless}}
+			</td>
+			{{/if}}
+		</tr>
+		{{/each}}
+
+		{{/unless}}
+	</tbody>
+
+</table>

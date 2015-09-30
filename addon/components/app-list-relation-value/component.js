@@ -24,7 +24,6 @@ export default Ember.Component.extend({
 
 		this.get("model").get(this.get("field")).then(related => {
 			var values = [];
-			debugger;
 
 			related.forEach(function(item) {
 				values.push(item.get(relatedField));

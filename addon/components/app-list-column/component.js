@@ -3,6 +3,9 @@ import layout from "./template";
 
 export default Ember.Component.extend({
 	layout: layout,
+
+	// Bubble up actions.
+	target: Ember.computed.alias("targetObject"),
 	
 	// The model. Must be passed in.
 	model: null,

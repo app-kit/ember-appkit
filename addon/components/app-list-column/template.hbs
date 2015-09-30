@@ -7,13 +7,13 @@
 {{#if sort}}
 <div class="sorter" style="display: inline-block;">
 	<div class="sort-up">
-		<a href="#" {{action "sort" field "asc" }}>
+		<a href="#" {{action "sort" field true }}>
 			<span class="glyphicon glyphicon-chevron-up"></span>
 		</a>
 	</div>
 
 	<div class="sort-down">
-		<a href="#" {{action "sort" field "desc" }}>
+		<a href="#" {{action "sort" field false }}>
 			<span class="glyphicon glyphicon-chevron-down"></span>
 		</a>
 	</div>

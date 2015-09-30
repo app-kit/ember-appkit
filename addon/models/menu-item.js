@@ -10,6 +10,8 @@ export default DS.Model.extend({
 	route: DS.attr("string"),
 	routeArgs: DS.attr("string"),
 
+	weight: DS.attr("number"),
+
 	menu: DS.belongsTo("menu"),
 	parent: DS.belongsTo("menu-item", {inverse: "children"}),
 	children: DS.hasMany("menu-item", {inverse: "parent"})

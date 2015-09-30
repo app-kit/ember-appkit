@@ -10,12 +10,24 @@ export default Ember.Component.extend({
 
   title: "",
 
-  // Total model count for pager. 
-  totalModels: 0,
+  itemsComponent: "app-list-table",
 
-  // Filters to apply and sort.
-  fixedParams: {},
-  params: {},
+  // Total model count for pager. 
+  totalModels: Ember.computed("models", function() {
+  	return this.get("models").get("length");
+  }),
+
+  // Base query object to use for querying the API.
+  // Here you should specify joins or field limitations.
+  // This query will be merged with the current query that contains
+  //  filters and sorting. 
+  baseQuery: {
+  },
+
+  // Current query used, with sorting and filtering info.
+  query: {},
+
+  updateCounter: 0,
 
   // Currently viewed page.
   page: 1,
@@ -27,43 +39,62 @@ export default Ember.Component.extend({
   // Flag for loading state.
   loading: false,
 
-  models: Ember.computed("modelName", "params", "updateCounter", function() {
+  update() {
+    this.set("updateCounter", this.get("updateCounter") + 1);
+  },
+
+  // Array of table columns to show.
+  // Format: [{
+  //   field: "fieldname",
+  //   title: "Pretty Field Name",
+  //   sort: true,
+  //   
+  //   // Additional settings for the value component
+  //   valueComponentSettings: {}
+  //   
+  //  // Optional component name for the column value.
+  //  // The component will receive "model" and "field" as arguments.
+  //   valueComponent: "my-value-component"
+  // }]
+  columns: null,
+
+
+  // If true, a search form will be rendered.
+  searchForm: true,
+
+  // Optional component for an action column.
+  actionColumnComponent: null,
+
+  buildQuery() {
+    let baseQuery = this.get("baseQuery") || {};
+    let query = Ember.$.extend(baseQuery, this.get("query") || {});
+
+    return query;
+  },
+
+  models: Ember.computed("modelName", "baseQuery", "query", "updateCounter", function() {
   	var modelName = this.get("modelName");
   	if (!modelName) {
   		return null;
   	}
 
-  	var fixedParams = this.get("fixedParams");
-  	var params = this.get("params");
-  	params = Ember.$.extend(fixedParams, params);
+    let query = this.buildQuery();
+    // If no ordering was specified, order by id.
+    if (!query.order) {
+      query.order = "id";
+    }
+
 
   	var models = PagedRemoteArray.create({
   		store: this.store,
   		modelName: this.get("modelName"),
   		page: this.get("page"),
   		perPage: this.get("perPage"),
-  		otherParams: params
+  		otherParams: {query: query}
   	});
 
   	return models;
   }),
-
-
-
-	// Array of table columns to show.
-	// Format: [{
-	//   field: "fieldname",
-	//   title: "Pretty Field Name",
-	//   sort: true,
-	//   
-	//   // Additional settings for the value component
-	//   valueComponentSettings: {}
-	//   
-	//  // Optional component name for the column value.
-	//  // The component will receive "model" and "field" as arguments.
-	//   valueComponent: "my-value-component"
-	// }]
-	columns: null,
 
 	columnList: Ember.computed("modelName", "columns", function() {
 		// If custom columns are defined, use them.
@@ -92,12 +123,17 @@ export default Ember.Component.extend({
 		return columns;
 	}),
 
-	// If true, a search form will be rendered.
-	searchForm: true,
+  actions: {
+    sort(field, ascending) {
+      let query = this.get("query");
+      if (!ascending) {
+        field = "-" + field;
+      }
+      query.order = field;
+      this.set("query", query);
 
-	// Optional component for an action column.
-	actionColumnComponent: null,
-
-	// The get parameter to use for searching.
-	searchQueryParam: "search",
+      this.set("query", query);
+      this.update();
+    }
+  }
 });
