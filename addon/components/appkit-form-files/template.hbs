@@ -1,65 +1,79 @@
-<div class="box box-info">
-	<div class="box-header with-border">
-		<h5 class="box-title">{{label}}</h5>
-	</div>
 
-	<div class="box-body">
-		<ul>
-		{{#unless files.length}}
-		<li>No files yet.</li>
-		{{/unless}}
+<div class="app-list-nested">
 
-		{{#each files as |file|}}
-		<li>
-			<div class="row">
-				<div class="col-xs-3">
-					{{#if file.id}}
-						<a href="{{file.url}}" target="_blank">{{file.fullName}}</a>
-					{{else}}
-						{{file.fullName}}
-						{{/if}}
-				</div>
-				<div class="col-xs-3">
-					<div class="form-group">
-						<label for="">Title</label>
-						{{input type="text" class="form-control" value=file.title}}
-					</div>
-				</div>
-				<div class="col-xs-4">
-					<div class="form-group">
-						<label for="">Description</label>
-						{{textarea rows=2 value=file.description class="form-control"}}
-					</div>	
-				</div>
-				<div class="col-xs-2">
-					<button class="btn btn-danger" {{action "delete" file}}>
-						<span class="glyphicon glyphicon-trash"></span>
-					</button>
-				</div>
-			</div>
-		</li>
-		{{/each}}
-		</ul>
-	</div>
+	<div class={{tableWrapClass}}>	
+	<div class="box box-info">
+		<div class="box-header with-border">
+			<h4 class="box-title pull-left" style="padding-right: 50px;">{{title}}</h4>
+		</div>
 
-	<div class="box-footer">
-		<ul class="uploading-files">
-			{{#each uploadingFiles as |file|}}
-			<li>
+		<div class="box-body table-responsive no-padding">
+			<ul class="list-group">
+				{{#unless models.length}}
+				<li class="list-group-item">No files uploaded yet.</li>
+				{{/unless}}
+
+				{{#each models as |file index|}}
+				<li class="list-group-item">
 				<div class="row">
-					<div class="col-xs-4">{{file.name}}</div>
-					<div class="col-xs-8">
-						<div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow={{progress}} aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%">
-		       		<span class="sr-only">{{progress}}% Complete</span>
-		        </div>
+					{{#app-form-nested-basic model=file modelParentField=false title=false titleField=false parentModel=model parentField=parentField modelParentField=modelParentField}}
+						<div class="col-xs-3">
+							{{#if file.id}}
+								<a href="{{file.url}}" target="_blank">{{file.fullName}}</a>
+							{{else}}
+								{{file.fullName}}
+							{{/if}}
+
+							{{#if file.isImage}}
+							<div class="img-wrap" style="overflow: hidden;">
+								<img src="{{file.url}}" alt="" style="max-width: 100%" />
+							</div>
+							{{/if}}
+						</div>
+						<div class="col-xs-3">
+							{{em-input property="title" label="Title" placeholder="Title"}}
+						</div>
+						<div class="col-xs-4">
+							{{em-text property="description" label="Description"}}
+						</div>
+						<div class="col-xs-2">
+							<div class="" style="margin-bottom: 5px;">
+								{{app-list-ordering model=file index=index totalModels=totalModals updatingOrdering=updatingOrdering}}
+							</div>
+							<button class="btn btn-danger" {{action "delete" file}}>
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</div>	
+					{{/app-form-nested-basic}}
 					</div>
-				</div>
-			</li>
-			{{/each}}
-		</ul>
-		
-		<form action={{uploadUrl}}>
-			<input class="upload-input" type="file" name="files[]" multiple>
-		</form>
-	</div>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+
+		<div class="box-footer">
+			<ul class="uploading-files">
+				{{#each uploadingFiles as |file|}}
+				<li>
+					<div class="row">
+						<div class="col-xs-4">{{file.name}}</div>
+						<div class="col-xs-8">
+							<div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow={{progress}} aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%">
+			       		<span class="sr-only">{{progress}}% Complete</span>
+			        </div>
+						</div>
+					</div>
+				</li>
+				{{/each}}
+			</ul>
+			
+			<form action={{uploadUrl}}>
+				<input class="upload-input" type="file" name="files[]" multiple>
+			</form>
+		</div>
+
+		{{yield}}
+	</div> <!-- ./ list box -->
+	</div> <!-- end of box wrapper -->
+	
 </div>

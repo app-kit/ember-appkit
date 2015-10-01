@@ -10,17 +10,19 @@ export default AppForm.extend({
 
  	modelParentField: null,
 
- 	actions: {
- 		submit() {
-      var model = this.get("model");
+  persist() {
+    var model = this.get("model");
 
-      // Set the parent.
-      var parent = this.get("parentModel");
-      if (this.get("modelParentField")) {
-        model.set(this.get("modelParentField"), parent);
-      }
+    // Set the parent.
+    var parent = this.get("parentModel");
+    if (this.get("modelParentField")) {
+      model.set(this.get("modelParentField"), parent);
+    }
 
-      this._super();
- 		}
- 	}
+    // Add new model to parent.
+    parent.get(this.get("parentField")).addObject(model);
+
+    this._super();
+
+  },
 });

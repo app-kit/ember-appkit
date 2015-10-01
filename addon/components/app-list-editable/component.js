@@ -23,7 +23,11 @@ export default AppList.extend({
   actionColumnComponent: "app-list-action-column",
 
   canOrder: false,
+  canOrderHierarchy: false,
+  autoPersistOrder: true,
 	orderField: "weight",
+	orderHierarchyParentField: "parent",
+	orderHierarcyChildrenField: "children",
 	updatingOrder: false,
 
 	// If ordering is enabled, force order by orderField.
@@ -67,52 +71,54 @@ export default AppList.extend({
 
 	actions: {
 
-		orderUp(index, model) {
+		// Action can be: up|down|up-parent|down-child
+		order(action, index, model) {
 			let field = this.get("orderField");
 			let models = this.get("models");
-			let previous = models.objectAt(index-1);
-			let previousWeight = previous.get(field);
 
-			previous.set(field, model.get(field));
-			model.set(field, previousWeight);
+			// The models affected by the reordering.
+			// Needed for persisting if autoPersistOrder is true.
+			let updatedModels = [model];
 
-			this.set("updatingOrder", true);
-			Ember.RSVP.all([
-				model.save(),
-				previous.save()
-			]).then(() => {
-				this.setProperties({
-					updatingOrder: false,
-					updateCounter: this.get("updateCounter") + 1
+			if (action == "up") {
+				let previous = models.objectAt(index-1);
+				let previousWeight = previous.get(field);
+
+				previous.set(field, model.get(field));
+				model.set(field, previousWeight);
+
+				updatedModels.push(previous);
+			} else if (action == "down") {
+				let next = this.get("models").objectAt(index+1);
+				let nextWeight = next.get(field);
+
+				next.set(field, model.get(field));
+				model.set(field, nextWeight);
+
+				updatedModels.push(next);
+			}
+
+			if (this.get("autoPersistOrder")) {
+				this.set("updatingOrder", true);
+
+				let promises = [];
+				for (let i = 0; i < updatedModels.length; i++) {
+					promises.push(updatedModels[i].save());
+				}
+
+				Ember.RSVP.all(promises).then(() => {
+					this.setProperties({
+						updatingOrder: false,
+						updateCounter: this.get("updateCounter") + 1
+					});
+				}, data => {
+					bootbox.alert("Error while updating order.");
+					console.log("Update ordering error: ", data);
 				});
-			}, data => {
-				bootbox.alert("Error while updating order.");
-				console.log("Update ordering error: ", data);
-			});
-		},
 
-		orderDown(index, model) {
-			let field = this.get("orderField");
-			let next = this.get("models").objectAt(index+1);
-			let nextWeight = next.get(field);
-
-			next.set(field, model.get(field));
-			model.set(field, nextWeight);
-
-			this.set("updatingOrder", true);
-
-			Ember.RSVP.all([
-				model.save(),
-				next.save()
-			]).then(() => {
-				this.setProperties({
-					updatingOrder: false,
-					updateCounter: this.get("updateCounter") + 1
-				});
-			}, data => {
-				bootbox.alert("Error while updating order.");
-				console.log("Update ordering error: ", data);
-			});
+			} else {
+				this.update();
+			}
 		},
 
 		// If the optional model argument is set, the given model will be used for
@@ -207,10 +213,12 @@ export default AppList.extend({
 			bootbox.confirm("Are you sure?", flag => {
 				if (flag) {
 					model.deleteRecord();
-					model.save();
+					return model.save();
 
 					// Trigger a reload.
 					//this.set("updateCounter", this.get("updateCounter") + 1);
+				} else {
+					return false;
 				}
 			});
 		}

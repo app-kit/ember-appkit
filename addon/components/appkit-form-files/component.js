@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import NestedList from "../app-list-nested/component";
 import layout from "./template";
 
 var UploadingFile = Ember.Object.extend({
@@ -7,21 +8,14 @@ var UploadingFile = Ember.Object.extend({
 	name: null,
 });
 
-export default Ember.Component.extend({
+export default NestedList.extend({
 	layout: layout,
 
 	appkit: Ember.inject.service("appkit"),
 	
-	model: null,
-	field: null,
-	label: null,
-
 	bucket: null,
 
-	files: null,
 	uploadingFiles: Ember.A([]),
-
-	url: null,
 
 	didInsertElement() {
 		this._super.apply(arguments);
@@ -33,16 +27,6 @@ export default Ember.Component.extend({
 		var url = this.appkit.get("apiUrl")
 		url += "/file-upload";
 		this.set("uploadUrl", url);
-
-		var files = this.get("model").get(this.get("field"));
-
-		if (files.then) {
-			files.then(files => {
-				this.set("files", files);
-			});
-		} else {
-			this.set("files", files);
-		}
 
 		var element = Ember.$(this.get("element"));
 		var component = this;
@@ -67,40 +51,19 @@ export default Ember.Component.extend({
 
       done(e, data) {
       	component.get("uploadingFiles").removeObject(data.context);
+      	let models = component.get("models");
+
       	var file = component.store.createRecord("file", {
       		tmpPath: data.result.data.data[0],
       		fullName: data.files[0].name,
-      		bucket: component.get("bucket")
+      		bucket: component.get("bucket"),
+      		weight: models.get("length")
       	});
-      	component.get("files").addObject(file);
+
+      	//models.addObject(file);
+      	component.get("parentModel").get(component.get("parentField")).addObject(file);
+      	this.set("updateCounter", this.get("updateCounter") + 1);
       }
 		});
 	},
-
-	actions: {
-		delete(file) {
-			if (!file.get("id")) {
-				// Not persisted yet, so just remove the object from the array.
-				this.get("files").removeObject(file);
-			} else {
-				// Persisted, so delete it remotely.
-
-				// First, the file needs to be removed from the m2m collection.
-				var model = this.get("model");
-				var files = model.get(this.get("field"));
-				files.removeObject(file);
-
-				model.save().then(function() {
-					file.deleteRecord();
-					return file.save();
-				}).then(() => {
-
-				}, data => {
-					bootbox.alert("Could not delete file: " + data);
-					console.log("File delete error: ", data);
-				});
-			}
-		}
-	}
-
 });

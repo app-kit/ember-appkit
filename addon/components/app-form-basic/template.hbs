@@ -1,0 +1,26 @@
+{{#if hasBlock}}
+	{{yield}}
+{{else}}
+	{{#each fieldList as |field|}}
+
+		{{#if field.component}}
+			{{component field.component field=field model=model}}
+		{{/if}}
+
+		{{#unless field.component}}
+			{{#if (eq field.type "string")}}
+				{{em-input property=field.field label=field.label placeholder=field.placeholder}}
+			{{/if}}
+
+			{{#if (eq field.type "boolean")}}
+				{{em-checkbox label=field.label property=field.field}}
+			{{/if}}
+
+			{{#if (eq field.type "relationship")}}
+				{{app-form-relationship model=model field=field.field label=field.label}}
+			{{/if}}
+		{{/unless}}
+
+	{{/each}}
+
+{{/if}}

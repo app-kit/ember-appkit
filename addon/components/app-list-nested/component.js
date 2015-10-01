@@ -10,32 +10,33 @@ export default AppListEditable.extend({
 	parentField: null,
 	modelParentField: null,
 
+  autoPersistOrder: false,
+
 	createFormComponent: "app-form-nested",
 	updateFormComponent: "app-form-nested",
 
-  models: Ember.computed("modelName", "query", "baseQuery", "updateCounter", "parent", "parentField", function() {
-    var modelName = this.get("modelName");
+  models: Ember.computed("parentModel", "parentField", "updateCounter", function() {
     var parent = this.get("parentModel");
-    var modelParentField = this.get("modelParentField");
+    var parentField = this.get("parentField");
+    debugger;
 
-    if (!(modelName && parent && modelParentField)) {
+    if (!(parent && parentField)) {
       return null;
     }
 
-    let query = this.buildQuery();
-
-    query.filters = query.filters || {};
-    query.filters[this.get("modelParentField") + "ID"] = parent.get("id");
-
-    var models = PagedRemoteArray.create({
-      store: this.store,
-      modelName: modelName,
-      page: this.get("page"),
-      perPage: this.get("perPage"),
-      otherParams: {query: query}
-    });
+    let models = parent.get(parentField);
+    if (this.get("canOrder")) {
+      models = models.sortBy(this.get("orderField"));
+    }
 
     return models;
   }),
+
+  totalModels: Ember.computed("models", function() {
+    return this.get("models").get("length");
+  }),
+
+  actions: {
+  }
 
 });

@@ -17,6 +17,8 @@ export default DS.Model.extend({
 	width: DS.attr("number"),
 	height: DS.attr("number"),
 
+	weight: DS.attr("number"),
+
 	// Temporary file path, used only on client side.
 	tmpPath: DS.attr("string"),
 
