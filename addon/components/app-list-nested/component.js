@@ -18,7 +18,6 @@ export default AppListEditable.extend({
   models: Ember.computed("parentModel", "parentField", "updateCounter", function() {
     var parent = this.get("parentModel");
     var parentField = this.get("parentField");
-    debugger;
 
     if (!(parent && parentField)) {
       return null;
@@ -37,6 +36,7 @@ export default AppListEditable.extend({
   }),
 
   actions: {
+
   }
 
 });

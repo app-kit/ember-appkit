@@ -115,7 +115,6 @@ export default AppList.extend({
 					bootbox.alert("Error while updating order.");
 					console.log("Update ordering error: ", data);
 				});
-
 			} else {
 				this.update();
 			}

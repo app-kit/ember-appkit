@@ -62,7 +62,7 @@ export default NestedList.extend({
 
       	//models.addObject(file);
       	component.get("parentModel").get(component.get("parentField")).addObject(file);
-      	this.set("updateCounter", this.get("updateCounter") + 1);
+      	component.update();
       }
 		});
 	},

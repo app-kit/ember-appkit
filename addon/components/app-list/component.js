@@ -13,9 +13,7 @@ export default Ember.Component.extend({
   itemsComponent: "app-list-table",
 
   // Total model count for pager. 
-  totalModels: Ember.computed("models", function() {
-  	return this.get("models").get("length");
-  }),
+  totalModels: 0,
 
   // Base query object to use for querying the API.
   // Here you should specify joins or field limitations.
