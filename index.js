@@ -7,9 +7,12 @@ module.exports = {
   afterInstall: function() {
   	this._super(arguments);
 
-    this.addBowerPackageToProject('bootbox.js'); 
-    this.addBowerPackageToProject('bootstrap-tagsinput'); 
-    return this.addBowerPackageToProject("blueimp-file-upload");
+    return this.addBowerPackagesToProject([
+      "bootbox.js",
+      "bootstrap-tagsinput",
+      "blueimp-file-upload",
+      "ckeditor",
+    ]);
   },
 
   included: function(app) {

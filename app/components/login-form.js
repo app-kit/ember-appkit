@@ -1,0 +1,1 @@
+export { default } from 'ember-cli-appkit/components/login-form/component';
