@@ -12,5 +12,6 @@ export default BasicForm.extend({
   submitButton: false,
 
   submitLabel: "Save",
-  cancelLabel: "Cancel"
+  cancelLabel: "Cancel",
+
 });

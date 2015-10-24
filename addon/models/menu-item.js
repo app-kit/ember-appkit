@@ -13,6 +13,21 @@ export default DS.Model.extend({
 	weight: DS.attr("number"),
 
 	menu: DS.belongsTo("menu"),
-	parent: DS.belongsTo("menu-item", {inverse: "children"}),
-	children: DS.hasMany("menu-item", {inverse: "parent"})
+	parent: DS.belongsTo("menu-item", {inverse: "children", async: true}),
+	children: DS.hasMany("menu-item", {inverse: "parent", async: true}),
+
+	hasParent: Ember.computed("parent", function() {
+		return !!this.get("parent");
+	}),
+
+	level: Ember.computed("parent", function() {
+		let lvl = 0;
+		let parent = this.get("parent");
+		while (parent) {
+			++lvl;
+			parent = parent.get("parent");
+		}
+
+		return lvl;
+	})
 });

@@ -12,15 +12,20 @@ export default DS.Model.extend({
 	
 	size: DS.attr("number"),
 	mime: DS.attr("string"),
+	mediaType: DS.attr("string"),
 
 	isImage: DS.attr("boolean"),
 	width: DS.attr("number"),
 	height: DS.attr("number"),
 
 	weight: DS.attr("number"),
+	Data: DS.attr(),
+	type: DS.attr("string"),
 
-	// Temporary file path, used only on client side.
 	tmpPath: DS.attr("string"),
+
+	parentFile: DS.belongsTo("file", {async: false, inverse: "relatedFiles"}),
+	relatedFiles: DS.hasMany("file", {async: false, inverse: "parentFile"}),
 
 	url: Ember.computed("id", "fullName", function() {
 		var id = this.get("id");
@@ -32,5 +37,23 @@ export default DS.Model.extend({
 		var url = host + "/files/" + id + "/" + this.get("fullName");
 
 		return url;
-	})
+	}),
+
+	imageUrl(width, height, filters) {
+		let id = this.get("id");
+		if (!id) {
+			return null;
+		}
+
+		let host = this.container.lookup("service:appkit").get("host");
+		let url = host + "/images/" + id + "/" + this.get("fullName");
+
+		url += `?width=${width}&height=${height}`;
+
+		if (filters) {
+			url += "&filters=" + filters.join(",");
+		}
+
+		return url;
+	}
 });

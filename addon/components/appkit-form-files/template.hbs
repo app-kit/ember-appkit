@@ -2,7 +2,7 @@
 <div class="app-list-nested">
 
 	<div class={{tableWrapClass}}>	
-	<div class="box box-info">
+	<div class="box box-info box-solid">
 		<div class="box-header with-border">
 			<h4 class="box-title pull-left" style="padding-right: 50px;">{{title}}</h4>
 		</div>
@@ -32,6 +32,14 @@
 						</div>
 						<div class="col-xs-3">
 							{{em-input property="title" label="Title" placeholder="Title"}}
+
+							{{em-select
+		            label="Group"
+		            property="type"
+		            content=typeOptions
+		            optionValuePath="type"
+		            optionLabelPath="label"
+		            prompt="--select--"}}
 						</div>
 						<div class="col-xs-4">
 							{{em-text property="description" label="Description"}}

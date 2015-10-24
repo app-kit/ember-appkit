@@ -10,13 +10,22 @@ export default Ember.Component.extend({
 
 	tags: "",
 
+	loading: true,
+
+	inserted: false,
+
 	build: Ember.on("init", function() {
-		
-
+		this.store.query("tag", {
+			query: {filters: {'"group"': this.get("tagGroup")}}
+		}).then(() => {
+			this.set("loading", false);
+			if (this.get("inserted")) {
+				this.initialize();
+			}
+		});
 	}),
-	
 
-	didInsertElement() {
+	initialize() {
 		if (!this.get("model")) {
 			throw new Error("No model set");
 		}
@@ -48,8 +57,8 @@ export default Ember.Component.extend({
 
 			// Try to find existant tag.
 			var matchedTag = this.store.peekAll("tag").filterBy("group", tagGroup).filterBy("tag", tagName);
-			if (matchedTag.length > 0) {
-				modelTags.addObject(matchedTag);
+			if (matchedTag.length === 1) {
+				modelTags.addObject(matchedTag.objectAt(0));
 			} else {
 				var newTag = this.store.createRecord("tag", {
 					tag: tagName,
@@ -61,10 +70,17 @@ export default Ember.Component.extend({
 
 		input.on("itemRemoved", event => {
 			var tagName = event.item;
-
-			var tag = modelTags.filterBy("tag", tagName).get("content")[0];
-			modelTags.removeObject(tag);
+			let matchedTag = this.store.peekAll("tag").filterBy("group", tagGroup).filterBy("tag", tagName).objectAt(0);
+			modelTags.removeObject(matchedTag);
 		});
+		
+	},
+	
 
+	didInsertElement() {
+		this.set("inserted", true);
+		if (!this.get("loading")) {
+			this.initialize();
+		}
 	}
 });

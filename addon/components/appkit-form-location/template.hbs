@@ -1,0 +1,103 @@
+<div class="box box-info box-solid">
+	<div class="box-header with-border">
+		<h4 class="box-title">{{label}}</h4>
+	</div>
+
+	<div class="box-body">
+		{{#if autocomplete}}
+		<div class="form-horizontal">
+			<div class="form-group" style="margin-left: 0; margin-right: 0;">
+				<div class="row">
+					<label for="" class="col-sm-3 control-label">
+						Search for location
+						<span class="glyphicon glyphicon-search"></span>
+					</label>
+
+					<div class="col-sm-6">
+						<input class="form-control" type="text" size="50" placeholder={{autocompletePlaceholder}} />
+					</div>
+
+					<div class="col-sm-3">
+						{{#unless showForm}}
+							<button class="btn btn-info" {{action "showForm"}}>Enter manually</button>
+						{{/unless}}
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/if}}
+	
+		{{#if showForm}}
+		<div class="form-wrapper">
+			<div class="row">
+				<div class="col-sm-3">
+					{{#if countrySelect}}
+					{{em-select
+	          label="Country"
+	          property="country"
+	          content=countryOptions
+	          optionValuePath="id"
+	          optionLabelPath="label"
+	          prompt="--select--"}}
+					{{else}}
+					{{em-input property="country" label="Country" placeholder="Country..."}}
+					{{/if}}
+				</div>
+
+				<div class="col-sm-3">
+					{{#if stateSelect}}
+					{{em-select
+	          label="State"
+	          property="state"
+	          content=stateOptions
+	          optionValuePath="id"
+	          optionLabelPath="label"
+	          prompt="--select--"}}
+	        {{else}}
+					{{em-input property="state" label="State" placeholder="State..."}}
+	        {{/if}}
+				</div>
+
+				<div class="col-sm-3">
+					{{#if localitySelect}}
+					{{em-select
+	          label="Locality"
+	          property="locality"
+	          content=localityOptions
+	          optionValuePath="id"
+	          optionLabelPath="label"
+	          prompt="--select--"}}
+	        {{else}}
+	        {{em-input property="locality" label="City/Town" placeholder="City/town..."}}
+	        {{/if}}
+				</div>
+				<div class="col-sm-3">
+					{{#if postalCodeSelect}}
+					{{em-select
+	          label="Postal Code"
+	          property="postalCode"
+	          content=postalCodeOptions
+	          optionValuePath="id"
+	          optionLabelPath="label"
+	          prompt="--select--"}}
+	        {{else}}
+	        {{em-input property="postalCode" label="Postal code" placeholder="Post code..."}}
+	        {{/if}}
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-4">
+					{{em-input property="street" label="Street" placeholder="Street..."}}
+				</div>
+				<div class="col-sm-4">
+					{{em-input property="streetNumber" label="Street number" placeholder="Street number..."}}
+				</div>
+				<div class="col-sm-4">
+					{{em-input property="top" label="Top" placeholder="Top/door number..."}}
+				</div>
+			</div>
+		</div>	
+		{{/if}}
+	</div>
+</div>

@@ -22,7 +22,7 @@ export default AppForm.extend({
     // Add new model to parent.
     parent.get(this.get("parentField")).addObject(model);
 
-    this._super();
+    this._super(...arguments);
 
   },
 });

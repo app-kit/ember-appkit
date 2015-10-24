@@ -8,13 +8,18 @@
 			{{/if}}
 
 			<div class="box-body">
-				{{#if errors}}
+				{{#if loading}}
+				<div class="" style="position: relative;">
+					{{ember-spinner}}
+				</div>
+				{{/if}}
+
+				{{#if errorList.length}}
 				<div class="alert alert-danger">
 					<ul>
-						{{#each errors as |error|}}
+						{{#each errorList as |error|}}
 						<li>
-							{{error.message}}
-							{{#if error.code}} ({{error.code}}){{/if}}
+							{{error}}
 						</li>
 						{{/each}}
 					</ul>
@@ -28,7 +33,7 @@
 						{{#each fieldList as |field|}}
 
 							{{#if field.component}}
-								{{component field.component field=field model=model}}
+								{{component field.component field=field model=model label=field.label property=field.field}}
 							{{/if}}
 
 							{{#unless field.component}}
@@ -53,20 +58,12 @@
 		</div> <!-- ./.box-body -->
 
 		<div class="box-footer">
-			{{#if loading}}
-			<div class="" style="position: relative;">
-				{{ember-spinner}}
-			</div>
-			{{else}}
-			
 			{{#if cancelLabel}}
 			<button class="btn btn-default" {{action "formCancelled" }}>{{cancelLabel}}</button>
 			{{/if}}
 
 			{{#if submitLabel}}
-			<button class="btn btn-default" {{action "submit"}}>{{submitLabel}}</button>	
-			{{/if}}
-
+			<button class="btn btn-default" {{action "submit"}} disabled={{canSubmit}}>{{submitLabel}}</button>	
 			{{/if}}
 		</div>
 	</div>  <!-- ./.box -->

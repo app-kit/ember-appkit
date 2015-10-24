@@ -31,6 +31,9 @@ export default EmForm.extend({
   // ]
   fields: null,
 
+
+  errorList: [],
+
   setDefaults: Ember.on("init", function() {
     var model = this.get("model");
     var defaults = this.get("defaults");
@@ -141,15 +144,32 @@ export default EmForm.extend({
     return false;
   },
 
+  updateErrorList() {
+    let errors = this.get("model.errors");
+    let errList = [];
+    Object.keys(errors).forEach(function(key) {
+      let err = errors.get(key);
+      if (err.length > 0) {
+        errList.push({key: key, message: err[0]});
+      }
+    });
+
+    this.set("errorList", errList);
+  },
+
   actions: {
   	submit: function() {
   		var model = this.get("model");
+
+      window.scrollTo(0, 0);
 
       if (!model.validate) {
         this.persist();
       } else {
         model.validate().then(() => {
           this.persist();
+        }, data => {
+          this.updateErrorList();
         });
       }
   	},

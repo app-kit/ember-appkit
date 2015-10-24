@@ -1,18 +1,15 @@
 
 <div class="app-list-nested">
 
-	{{#if formModel}}
-		{{component formComponent model=formModel title=formTitle titleField=modelTitleField formSubmitted="formSubmitted" parentModel=parentModel parentField=parentField modelParentField=modelParentField}}
-	{{/if}}
-
-	<div class={{tableWrapClass}}>	
-	<div class="box box-info">
+	<div>	
+	<div class="box box-info box-solid">
 		<div class="box-header with-border">
 
 			<h4 class="box-title pull-left" style="padding-right: 50px;">{{title}}</h4>
 
 			{{#if allowCreate}}
 				<button class="btn btn-primary btn-create btn-sm pull-left" {{action "create" }}>
+					{{createLabel}}
 					<span class="glyphicon glyphicon-plus"></span>
 				</button>
 			{{/if}}
@@ -24,12 +21,23 @@
 			</div>
 		</div>
 
-		<div class="box-body table-responsive no-padding">
-			<table class="table">
+		<div class="box-body table-responsive no-padding" style="overflow: visible;">
+			<ul class="list-group">
 				{{#each models as |model index|}}
-				{{component updateFormComponent model=model title=false titleField=false parentModel=parentModel parentField=parentField modelParentField=modelParentField}}
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-xs-11">
+							{{component updateFormComponent model=model title=false titleField=false parentModel=parentModel parentField=parentField modelParentField=modelParentField}}
+						</div>
+						<div class="col-xs-1">
+							<button class="btn btn-danger" {{action "delete"}}>
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</div>
+					</div>
+				</li>
 				{{/each}}
-			</table>
+			</ul>
 		</div>
 
 		{{yield}}

@@ -9,5 +9,7 @@ export default DS.Model.extend({
 	userData: DS.attr(),
 	createdAt: DS.attr("date"),
 	updatedAt: DS.attr("date"),
-	roles: DS.hasMany("user-role", {async: true})
+	roles: DS.hasMany("user-role", {async: false}),
+
+	profile: DS.belongsTo("user-profile", {async: false}),
 });

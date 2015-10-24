@@ -11,7 +11,7 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "",
+  "repository": "app-kit/ember-appkit",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -47,7 +47,7 @@
     "ember-truth-helpers": "1.1.0",
     "ember-bootstrap-datetimepicker": "1.0.1",
     "ember-cli-pagination": "0.9.0",
-    "ember-simple-auth": "simplabs/ember-simple-auth#jj-abrams",
+    "ember-simple-auth": "simplabs/ember-simple-auth#1.0.0",
     "ember-cli-spinjs": "1.0.2"
   },
   "ember-addon": {

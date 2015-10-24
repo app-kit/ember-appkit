@@ -1,0 +1,1 @@
+export { default } from 'ember-cli-appkit/components/appkit-location-map/component';

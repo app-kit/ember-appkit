@@ -1,5 +1,6 @@
+import AppkitSerializer from "ember-cli-appkit/serializers/appkit";
 
-export function initialize(container, application) {
+export function initialize(application) {
 	// Inject appkit service into routes, controllers and components.
 	application.inject('component', 'appkit', 'service:appkit');
 	application.inject('route', 'appkit', 'service:appkit');

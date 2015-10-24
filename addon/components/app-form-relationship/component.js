@@ -49,7 +49,7 @@ export default Ember.Component.extend({
 		this.set("loading", true);
 		var that = this;
 
-		let relatedItems = model.get(field);
+		let related = model.get(field);
 
 		// Now, query the store for all related items.
 		that.store.findAll(targetModel).then(function(items) {
@@ -62,10 +62,12 @@ export default Ember.Component.extend({
 
 			// Build options.
 			items.forEach(function(item) {
+				let enabled = many ? related.contains(item) : related && related.get("id") === item.get("id");
+
 				options.push({
 					key: item.get("id"),
 					label: item.get(nameField),
-					enabled: relatedItems.contains(item)
+					enabled: enabled
 				});
 			});
 
@@ -73,7 +75,7 @@ export default Ember.Component.extend({
 				loading: false,
 				relatedModelType: targetModel,
 				many: many,
-				relatedModels: relatedItems,
+				relatedModels: related,
 				options: options,
 				selectedOption: selectedOption
 			});
@@ -90,13 +92,10 @@ export default Ember.Component.extend({
 
 	actions: {
 
-		// Action for a changed selection if not many.
-		// Triggerd by x-select.
-		selectionChanged(id) {
-			var model = this.get("model");
-			var item = this.store.peekRecord(this.get("relatedModelType", id));
-			model.set(this.get("field"), item);
-			model.set("isDirty", true);
+		optionSelected() {
+			let id = Ember.$(this.get("element")).find("select").val();
+			let item = this.store.peekRecord(this.get("relatedModelType"), id);
+			this.get("model").set(this.get("field"), item);
 		},
 
 		// Checkbox action for many select.
@@ -104,13 +103,19 @@ export default Ember.Component.extend({
 			var model = this.get("model");
 			var item = this.store.peekRecord(this.get("relatedModelType"), id);
 
+			let many = this.get("many");
+
 			model.get(this.get("field")).then(related => {
-				if (related.contains(item)) {
-					related.removeObject(item);	
+				if (many) {
+					if (related.contains(item)) {
+						related.removeObject(item);	
+					} else {
+						related.addObject(item);
+					}
+					model.set("isDirty", true);
 				} else {
-					related.addObject(item);
+					model.set(this.get("field"), item);
 				}
-				model.set("isDirty", true);
 			});
 		}
 	}

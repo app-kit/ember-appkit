@@ -36,7 +36,26 @@ export default AppListEditable.extend({
   }),
 
   actions: {
+    delete(model) {
+      bootbox.confirm("Are you sure?", flag => {
+        if (flag) {
+          let parent = this.get("parentModel");
+          parent.get(this.get("parentField")).removeObject(model);
 
+          if (model.get("id")) {
+            parent.save().then(() => {
+              model.deleteRecord();
+              return model.save();
+            }).then(() => {
+              this.update();
+            }, data => {
+              bootbox.alert("Error while deleting");
+              console.log("Deletion error: ", data);
+            });
+          }
+        }
+      });
+    }
   }
 
 });

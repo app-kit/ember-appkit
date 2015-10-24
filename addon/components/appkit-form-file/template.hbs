@@ -1,0 +1,39 @@
+<div class="form-group">
+	<label for="">{{label}}</label>
+		
+	{{#if file}}
+	<div class="row">
+		<div class="col-xs-10">
+			<div>{{file.fullName}}</div>
+			{{#if (and file.id file.isImage)}}
+			<div class="img-wrap" style="overflow: hidden">
+				<img src="{{file.url}}" alt="" style="max-width: 100%" />
+			</div>	
+			{{/if}}
+		</div>
+		<div class="col-xs-2">
+			<button class="btn btn-danger" {{action "delete"}}>
+				<span class="glyphicon glyphicon-trash"></span>
+			</button>
+		</div>
+	</div>	
+	{{/if}}
+
+	{{#if uploadingFileName}}
+	<div class="row">
+		<div class="col-xs-4">{{uploadingFileName}}</div>
+		<div class="col-xs-8">
+			<div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={{progressStyle}}>
+     		<span class="sr-only">{{uploadProgress}}% Complete</span>
+      </div>
+		</div>
+	</div>
+	{{/if}}
+
+	<div class="form-wrap" style={{formWrapStyle}}>
+		<form action={{uploadUrl}}>
+			<input class="upload-input" type="file" name="files[]" />
+		</form>
+	</div>
+
+</div>

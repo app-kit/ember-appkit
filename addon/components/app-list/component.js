@@ -63,6 +63,14 @@ export default Ember.Component.extend({
   // Optional component for an action column.
   actionColumnComponent: null,
 
+  // format: {
+  //   action: "action",
+  //   label: "Action",
+  //   icon: "glyphicon glypicon-lala"
+  // }
+  extraActions: [
+  ],
+
   buildQuery() {
     let baseQuery = this.get("baseQuery") || {};
     let query = Ember.$.extend(baseQuery, this.get("query") || {});
@@ -88,8 +96,10 @@ export default Ember.Component.extend({
   		modelName: this.get("modelName"),
   		page: this.get("page"),
   		perPage: this.get("perPage"),
-  		otherParams: {query: query}
+  		otherParams: {query: query},
   	});
+
+    console.log(models)
 
   	return models;
   }),

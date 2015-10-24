@@ -1,11 +1,13 @@
 import DS from 'ember-data';
 import Ember from "ember";
 
+var inflector = Ember.Inflector.inflector;
+
 function pluralize(key) {
     var str = Ember.String.underscore(key);
 
     if (str[str.length - 1] === "y") {
-        str = str.substring(0, str.length - 2) + "ie";
+        str = str.substring(0, str.length - 1) + "ie";
     }
 
     if (str[str.length - 1] !== "s") {
@@ -31,7 +33,8 @@ export default DS.JSONAPIAdapter.extend({
   }),
 
   pathForType: function(type) {
-    return pluralize(type);
+    //return pluralize(type);
+    return inflector.pluralize(type);
   },
 
   buildURL: function(modelName, id, snapshot, requestType, query) {

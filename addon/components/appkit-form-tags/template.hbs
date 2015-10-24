@@ -1,7 +1,12 @@
 <div class="appkit-form-tag-wrap" style="margin-bottom: 15px;">
-	<div class="">
-		<label for="">Tags</label>
+	{{#if loading}}
+	<div class="spinner-wrap" style="position: relative;">
+		{{ember-spinner}}
+	</div>
+	{{/if}}
+	
+	<div class="form-group">
+		<label style="display: block;" class="control-label" for="">Tags</label>
 		{{input class="form-control" value=tags}}
 	</div>
 </div>
-

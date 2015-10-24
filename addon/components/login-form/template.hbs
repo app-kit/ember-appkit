@@ -1,42 +1,250 @@
 
 <div class="login-box">
-  <div class="login-logo">
-    <a href="#"><b>{{title}}</b></a>
-  </div><!-- /.login-logo -->
-
   <div class="login-box-body">
-    <p class="login-box-msg">Sign in</p>
 
-    <form>
-			{{#if error}}
-			<div class="alert alert-danger">
-				{{error}}
-			</div>
-			{{/if}}
+    {{#if errors}}
+    <div class="alert alert-danger">
+      <ul class="list-unstyled">
+        {{#each errors as |error|}} 
+        <li>{{error}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    {{/if}}
 
-      <div class="form-group has-feedback">
-      {{input value=user class="form-control" placeholder="Email/Username"}}
+    {{#if loading}}
+    <div class="spinner-wrap">
+      {{ember-spinner}} 
+    </div>
+    {{/if}}
+    
+    {{#if (eq page "overview")}} 
+    <div class="row">
+      <div class="col-xs-12 col-sm-6">
+        <div class="info-box box-btn" {{action "show" "signIn" on="click"}}>
+          <span class="info-box-icon bg-aqua"><i class="fa fa-key"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-number">Sign in</span>
+          </div><!-- /.info-box-content -->
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-6">
+        <div class="info-box box-btn" {{action "show" "signUp" on="click"}}>
+          <span class="info-box-icon bg-aqua"><i class="fa fa-user-plus"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-number">Create Account</span>
+          </div><!-- /.info-box-content -->
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  
+    {{#if (eq page "signIn")}}
+    <h3>Sign In</h3>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-6">
+        <div class="info-box box-btn" {{action "show" "signInEmail"}}>
+          <span class="info-box-icon bg-aqua"><i class="fa fa-envelope-o"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-number">with Email</span>
+          </div><!-- /.info-box-content -->
+        </div>
+      </div>
+      
+      {{#if facebook}}
+      <div class="col-xs-12 col-sm-6">
+        <div class="info-box box-btn" {{action "signUpFacebook" true}}>
+          <span class="info-box-icon bg-aqua"><i class="fa fa-facebook-official"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-number">with Facebook</span>
+          </div><!-- /.info-box-content -->
+        </div>
+      </div>
+      {{/if}}
+      
+    </div>
+    
+    <button class="btn btn-block btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+    {{/if}}
+
+    {{#if (eq page "signInEmail")}}
+    <h3>Sign In</h3>
+
+    <form {{action "signInEmail" on="submit" }}>
+      <p class="login-box-msg">Sign in with your email and password.</p>
+
+      <div class="form-group form-group-email has-feedback">
+        {{input value=email class="form-control" placeholder="Email"}}
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
-      <div class="form-group has-feedback">
-      	{{input type="password" value=password class="form-control" placeholder="Password"}}
+
+      <div class="form-group form-group-password has-feedback">
+        {{input type="password" value=password class="form-control" placeholder="Password"}}
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
-      <div class="row">
-        <div class="col-xs-8">
-        </div><!-- /.col -->
-        <div class="col-xs-4">
-        	{{#if loading}}
-					<div style="position:relative;">
-						{{ember-spinner}}
-					</div>
-					{{else}}
-          	<button {{action "login"}} class="btn btn-primary btn-block btn-flat">Sign In</button>
-        	{{/if}}
-        </div><!-- /.col -->
+      
+      <div>
+        <button class="btn btn-primary btn-flat" type="submit">Log in</button>
+         <button class="btn btn-warning btn-flat" {{action "show" "forgotPassword"}}>Forgot password?</button>
       </div>
     </form>
+    
+      <br /> 
+      <div>
+        <button class="btn btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+      </div>
+    {{/if}}
+
+    {{#if (eq page "forgotPassword")}}
+      <h3>Reset your Password</h3>
+
+      <p class="login-box-msg">To reset your password, please enter your email address.</p>
+      <p class="login-box-msg">
+        A mail will be sent to your address with further instructions.
+      </p>
+    
+      <form {{action "requestPasswordReset" on="submit"}}>
+        <div class="form-group form-group-email has-feedback">
+          {{input value=email class="form-control" placeholder="Email"}}
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        
+        {{#unless loading}}
+        <div>
+          <button class="btn btn-primary btn-flat" type="submit">Send email</button>
+        </div>
+        {{/unless}}
+      </form>
+      
+      {{#unless loading}}
+      <br /> 
+      <button class="btn btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+      {{/unless}}
+    {{/if}}
+
+    {{#if (eq page "passwordResetRequested")}}
+      <h3>Password reset requested</h3>
+
+      <p class="login-box-msg">
+        An email was sent to your address with further instructions for resetting your password.
+      </p>
+
+      <br /> 
+      <button class="btn btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+    {{/if}}
+
+    {{#if (eq page "loggedIn")}}
+    <h3>Logged in</h3>
+
+    <p>You are now logged in.</p>
+    {{/if}}
+
+    {{#if (eq page "signUp")}}
+    <h3>Sign Up</h3>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-6">
+        <div class="info-box box-btn" {{action "show" "signUpEmail"}}>
+          <span class="info-box-icon bg-aqua"><i class="fa fa-envelope-o"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-number">with Email</span>
+          </div><!-- /.info-box-content -->
+        </div>
+      </div>
+      
+      {{#if facebook}}
+      <div class="col-xs-12 col-sm-6">
+        <div class="info-box box-btn" {{action "show" "signUpFacebook"}}>
+          <span class="info-box-icon bg-aqua"><i class="fa fa-facebook-official"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-number">with Facebook</span>
+          </div><!-- /.info-box-content -->
+        </div>
+      </div>
+      {{/if}}
+      
+    </div>
+    
+    <button class="btn btn-block btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+    {{/if}}
+
+    {{#if (eq page "signUpEmail")}}
+    <h3>Sign Up With Email</h3>
+
+    <form {{action "signUpEmail" on="submit" }}>
+      <p class="login-box-msg">Enter your email and pick a password.</p>
+
+      <div class="form-group form-group-email has-feedback">
+        {{input value=email class="form-control" placeholder="Email"}}
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+
+      <div class="form-group form-group-password has-feedback">
+        {{input type="password" value=password class="form-control" placeholder="Password"}}
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+
+      <button class="btn btn-primary btn-block btn-flat" type="submit">Sign up</button>
+    </form>
+    
+    <br />
+    <button class="btn btn-block btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+    {{/if}}
+
+    {{#if (eq page "signUpFacebook")}}
+    {{#if loading}}
+    <p>
+      Connecting to Facebook...
+    </p>
+    {{else}}
+      {{#if showFbPopupWarning}}
+      <p class="alert alert-warning">
+        Please ensure that your Browser did not block the Facebook popup.
+      </p>
+      {{/if}}
+      
+      <div>
+        <button class="btn btn-primary btn-flat btn-fb-login" {{action "signUpFacebook" }}>
+          <i class="fa fa-facebook-official"></i>
+          Login
+        </button>
+      </div>
+
+      <br />
+      <button class="btn btn-block btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+    {{/if}}
+    {{/if}}
+
+    {{#if (eq page "signUpFacebookEmail")}}
+      <form {{action "signupFacebookWithEmail" on="submit"}}>
+        <p class="login-box-msg">Facebook does not allow us to see your email.</p>
+        <p class="login-box-msg">Please enter the email address you want yo use with Happens Locally.</p>
+
+        <div class="form-group form-group-email has-feedback">
+          {{input value=email class="form-control" placeholder="my-email@domain.com"}}
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div> 
+
+         <button class="btn btn-primary btn-block btn-flat" type="submit">Sign up</button>
+      </form>
+      {{#unless loading}}
+      <br />
+      <button class="btn btn-block btn-flat btn-warning" {{action "show" "overview" }}>Back</button>
+      {{/unless}}
+    {{/if}}
+
+    {{#if (eq page "welcome")}}
+    <h3>Welcome</h3>
+
+    <p>
+      Your sign up was successful. 
+    </p>
+    <p>
+      You are now logged in and ready to start using the site.
+    </p>
+    {{/if}}
 
   </div><!-- /.login-box-body -->
 </div><!-- /.login-box -->
-

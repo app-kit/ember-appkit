@@ -7,12 +7,10 @@ export default Ember.Component.extend({
   // Bubble up actions.
   target: Ember.computed.alias("targetObject"),
 
+  canOrderHierarchy: false,
+
   model: null,
   index: 0,
   updatingOrdering: false,
   totalModels: 0,
-
-  isLast: Ember.computed("index", "totalModels", function() {
-  	return this.get("index") === this.get("totalModels") - 1;
-  })
 });

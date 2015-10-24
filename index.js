@@ -4,6 +4,10 @@
 module.exports = {
   name: 'ember-cli-appkit',
 
+  isDevelopingAddon: function() {
+    return true;
+  },
+
   afterInstall: function() {
   	this._super(arguments);
 
@@ -12,6 +16,7 @@ module.exports = {
       "bootstrap-tagsinput",
       "blueimp-file-upload",
       "ckeditor",
+      "autobahn"
     ]);
   },
 
@@ -29,5 +34,8 @@ module.exports = {
 	  // Bootstrap-tagsinput.
 	  app.import(app.bowerDirectory + "/bootstrap-tagsinput/dist/bootstrap-tagsinput.js");
 	  app.import(app.bowerDirectory + "/bootstrap-tagsinput/dist/bootstrap-tagsinput.css");	
+
+    // Autobahn.js.
+    app.import(app.bowerDirectory + "/autobahnjs/autobahn.js")
   }
 };

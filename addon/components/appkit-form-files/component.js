@@ -12,10 +12,17 @@ export default NestedList.extend({
 	layout: layout,
 
 	appkit: Ember.inject.service("appkit"),
+	uploadUrl: null,
 	
 	bucket: null,
 
 	uploadingFiles: Ember.A([]),
+
+	typeOptions: [
+		{type: "gallery", label: "Gallery"},
+		{type:"list_image", label: "List image"},
+		{type:"attached", label: "Attached file"},
+	],
 
 	didInsertElement() {
 		this._super.apply(arguments);

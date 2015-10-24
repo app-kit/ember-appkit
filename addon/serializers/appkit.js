@@ -1,21 +1,9 @@
 import DS from 'ember-data';
+import Ember from "ember";
 
-function pluralize(key) {
-    var str = Ember.String.underscore(key);
-
-    if (str[str.length - 1] == "y") {
-        str = str.substring(0, str.length - 2) + "ie";
-    }
-
-    if (str[str.length - 1] != "s") {
-        str += "s"
-    }
-
-    return str;
-}
+var inflector = Ember.Inflector.inflector;
 
 export default DS.JSONAPISerializer.extend({
-
 	keyForAttribute(attr, method) {
 		return attr;
 	},
@@ -25,21 +13,12 @@ export default DS.JSONAPISerializer.extend({
 	},
 
 	modelNameFromPayloadKey(key) {
-		var str = key.replace("_", "-");
-		if (str.substring(str.length - 3, str.length) === "ies") {
-			str = str.substring(0, str.length - 3) + "y";
-		}
-
-		if (str[str.length - 1] === "s") {
-			str = str.substring(0, str.length - 1);
-		}
-
-		return str;
+		let str = (key || "").replace("_", "-");
+		return inflector.singularize(str);
 	},
 
 	payloadKeyFromModelName(name) {
-		return pluralize(name);
-	}
+		return inflector.pluralize(name);
+	},
 
 });
-

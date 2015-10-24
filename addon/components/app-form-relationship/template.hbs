@@ -9,10 +9,10 @@
 				{{error}}
 			</div>
 		{{else}}
+			{{#if many}}
 			<div class="form-group">
 		    <label class="col-sm-2 control-label">{{label}}</label>
 		    <div class="col-sm-10">
-					{{#if many}}
 					<div class="select-wrap">
 						{{#each options as |option|}}
 						<label class="checkbox">
@@ -24,15 +24,20 @@
 						</label>
 						{{/each}}
 					</div>
-					{{else}}
-						{{#x-select value=selectedOption action="selectionChanged"}}
-							{{#each options as |option|}}
-							{{#x-option value=option.key}}{{option.label}}{{/x-option}}
-							{{/each}}
-						{{/x-select}}
-					{{/if}}
 		    </div>
 		  </div>
+			{{else}}
+		  	<div class="form-group">
+		  		<label for="">{{label}}</label>
+					
+					<select name="" id="" class="form-control" {{action "optionSelected" on="change"}}>
+						<option value=""></option>
+						{{#each options as |option|}}
+						<option value="{{option.key}}" selected={{option.enabled}}>{{option.label}}</option>
+						{{/each}}
+					</select>
+		  	</div>
+			{{/if}}
 		{{/if}}
 	{{/if}}
 

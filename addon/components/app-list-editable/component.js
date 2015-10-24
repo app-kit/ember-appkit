@@ -27,7 +27,7 @@ export default AppList.extend({
   autoPersistOrder: true,
 	orderField: "weight",
 	orderHierarchyParentField: "parent",
-	orderHierarcyChildrenField: "children",
+	orderHierarchyChildrenField: "children",
 	updatingOrder: false,
 
 	// If ordering is enabled, force order by orderField.
@@ -96,6 +96,43 @@ export default AppList.extend({
 				model.set(field, nextWeight);
 
 				updatedModels.push(next);
+			} else if (action === "left") {
+				let parentField = this.get("orderHierarchyParentField");
+				let childrenField = this.get("orderHierarchyChildrenField");
+
+				let parent = model.get(parentField);
+				let parentsParent = parent.get(parentField);
+
+				let weight = 0;
+
+				if (parentsParent) {
+					weight = parentsParent.get(childrenField).get("length");
+				} else {
+					weight = this.get("models").get("length");
+				}
+
+				model.setProperties({
+					parent: parentsParent,
+					weight: weight
+				});
+
+				parent.get(childrenField).removeObject(model);
+
+				updatedModels.push(model);
+				updatedModels.push(parent);
+			} else if (action === "right") {
+				let parentField = this.get("orderHierarchyParentField");
+				let childrenField = this.get("orderHierarchyChildrenField");
+				
+				let newParent = this.get("models").objectAt(index - 1);
+				let newParentChildren = newParent.get(childrenField);
+				newParentChildren.addObject(model);
+
+				model.set(parentField, newParent);
+				model.set("weight", newParentChildren.get("length") - 1);
+
+				updatedModels.push(model);
+				updatedModels.push(newParent);
 			}
 
 			if (this.get("autoPersistOrder")) {
@@ -196,6 +233,7 @@ export default AppList.extend({
 				}
 
 				bootbox.alert("Could not load model for updating: " + msg);	
+				this.set("loading", false);
 			})
 		},
 
@@ -208,18 +246,23 @@ export default AppList.extend({
 			this.set("formModel", null);
 		},
 
-		delete(model) {
+		delete(model, noConfirm) {
 			bootbox.confirm("Are you sure?", flag => {
 				if (flag) {
-					model.deleteRecord();
-					return model.save();
-
-					// Trigger a reload.
-					//this.set("updateCounter", this.get("updateCounter") + 1);
+					this.delete(model);
 				} else {
-					return false;
+					// No-op.
 				}
 			});
 		}
+	},
+
+	delete(model) {
+		model.deleteRecord();
+		model.save().then(() => {
+
+		}, data => {
+			bootbox.alert("An error occurred while deleting.");
+		})
 	}
 });
