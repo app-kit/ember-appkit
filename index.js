@@ -16,7 +16,7 @@ module.exports = {
       "bootstrap-tagsinput",
       "blueimp-file-upload",
       "ckeditor",
-      "autobahn"
+      "appkit",
     ]);
   },
 
@@ -35,7 +35,12 @@ module.exports = {
 	  app.import(app.bowerDirectory + "/bootstrap-tagsinput/dist/bootstrap-tagsinput.js");
 	  app.import(app.bowerDirectory + "/bootstrap-tagsinput/dist/bootstrap-tagsinput.css");	
 
-    // Autobahn.js.
-    app.import(app.bowerDirectory + "/autobahnjs/autobahn.js")
+    // Appkit + dependencies.
+    app.import(app.bowerDirectory + "/lodash/lodash.js");
+    app.import(app.bowerDirectory + "/reqwest/reqwest.js");
+    app.import(app.bowerDirectory + "/bluebird/js/browser/bluebird.js");
+    app.import(app.bowerDirectory + "/autobahnjs/autobahn.js");
+    app.import(app.bowerDirectory + "/basil.js/build/basil.js");
+    app.import(app.bowerDirectory + "/appkit/dist/js/appkit.js");
   }
 };

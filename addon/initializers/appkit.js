@@ -6,12 +6,6 @@ export function initialize(application) {
 	application.inject('route', 'appkit', 'service:appkit');
 	application.inject('controller', 'appkit', 'service:appkit');
 
-	// Inject session into components and controlelrs, 
-	// since ember-simple-auth does not do it.
-	application.inject("component", "session", "session:main");
-	application.inject("controller", "session", "session:main");
-	application.inject("route", "session", "session:main");
-
 	// Also inject the store.
 	application.inject("component", "store", "service:store");
 	application.inject("controller", "store", "service:store");

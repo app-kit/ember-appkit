@@ -3,65 +3,86 @@ import Ember from "ember";
 
 var inflector = Ember.Inflector.inflector;
 
-function pluralize(key) {
-    var str = Ember.String.underscore(key);
-
-    if (str[str.length - 1] === "y") {
-        str = str.substring(0, str.length - 1) + "ie";
-    }
-
-    if (str[str.length - 1] !== "s") {
-        str += "s";
-    }
-
-    return str;
-}
-
-export default DS.JSONAPIAdapter.extend({
-  host: null,
-  namespace: null,
-
+export default DS.Adapter.extend({
   appkit: Ember.inject.service("appkit"),
 
-  buildHost: Ember.on("init", function() {
-  	var appkit = this.get("appkit");
-
-  	this.setProperties({
-  		host: appkit.get("host"),
-  		namespace: appkit.get("apiPrefix")
-  	});
-  }),
-
-  pathForType: function(type) {
-    //return pluralize(type);
-    return inflector.pluralize(type);
+  findRecord(store, type, id, snapshot) {
+    let collection = inflector.pluralize(type.modelName).replace("-", "_");
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get("appkit.appkit").findOne(collection, id).then(data => {
+        Ember.run(null, resolve, data);
+      });
+    }, err => {
+      Ember.run(null, reject, err);
+    });
   },
 
-  buildURL: function(modelName, id, snapshot, requestType, query) {
-    query = query || {};
-
-    // If "query" is set in query, turn it to json.
-    if (typeof query === "object" && query.query && typeof query.query === "object") {
-      query.query = JSON.stringify(query.query);
-    }
-    
-    let url = this._super(modelName, id,  snapshot,  requestType, query);
-    return url;
+  createRecord: function(store, type, snapshot) {
+    let data = this.serialize(snapshot, { includeId: true });
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get("appkit.appkit").method("create", data, null).then(data => {
+        Ember.run(null, resolve, data);
+      });
+    }, err => {
+      Ember.run(null, reject, err);
+    });
   },
 
-  ajaxOptions(url, type, options) {
-    // Call super to build up ajax options.
-    let ajaxOptions = this._super(url, type, options);
+  updateRecord: function(store, type, snapshot) {
+    let data = this.serialize(snapshot, { includeId: true });
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get("appkit.appkit").method("update", data, null).then(data => {
+        Ember.run(null, resolve, data);
+      });
+    }, err => {
+      Ember.run(null, reject, err);
+    });
+  },
 
-    // If the session is authenticated, add an Authentication header.
-    let session = this.container.lookup("session:main");
-    if (session && session.isAuthenticated) {
-      let token = session.get("authenticated").token;
-      ajaxOptions.headers = ajaxOptions.headers || {};
-      ajaxOptions.headers.Authentication = token;
+  deleteRecord: function(store, type, snapshot) {
+    let id = snapshot.id;
+    let collection = inflector.pluralize(type.modelName).replace("-", "_");
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get("appkit.appkit").delete({collection: collection, id: id}).then(data => {
+        Ember.run(null, resolve, data);
+      });
+    }, err => {
+      Ember.run(null, reject, err);
+    });
+  },
+
+  findAll: function(store, type, sinceToken) {
+    return this.query(store, type, {});
+  },
+
+  query: function(store, type, data) {
+    let collection = inflector.pluralize(type.modelName).replace("-", "_");
+    if (!data.query) {
+      throw new Error("Called store.query(), but data contains no 'query'.");
     }
 
-    return ajaxOptions;
+    let query = data.query;
+    if (data.page && data.per_page) {
+      query.limit = data.per_page;
+      query.offset = (data.page - 1) * data.per_page;
+    }
+    query.collection = collection; 
+
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      this.get("appkit.appkit").query(null, query).then(data => {
+        // Handle empty data.
+        if (!data.data) {
+          data.data = [];
+        }
+        // Handle single object.
+        if (!Array.isArray(data.data)) {
+          data.data = [data.data];
+        }
+        Ember.run(null, resolve, data);
+      });
+    }, err => {
+      Ember.run(null, reject, err);
+    });
   },
 
 });

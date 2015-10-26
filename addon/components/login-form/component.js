@@ -74,7 +74,7 @@ export default Ember.Component.extend({
 				errors: null
 			});
 
-			this.get("appkit").signInWithEmail(email, pw).then(() => {
+			this.get("appkit").authenticateWithPassword(email, pw).then(() => {
 				this.setProperties({
 					loading: false,
 					page: "loggedIn"
@@ -160,7 +160,7 @@ export default Ember.Component.extend({
 				errors: null
 			});
 
-			this.get("appkit").signUpWithEmail(email, pw).then(() => {
+			this.get("appkit").signUpWithPassword(email, pw).then(() => {
 				this.setProperties({
 					loading: false,
 					page: "welcome"
@@ -263,7 +263,7 @@ export default Ember.Component.extend({
 		}
 
 		let appkit = this.get("appkit");
-		appkit.signInOrUpWithOauth("facebook", fb.get("token"), userData).then(() => {
+		appkit.authenticateOrSignUpUpWithOauth("facebook", fb.get("token"), userData).then(() => {
 			that.setProperties({
 				loading: false,
 				page: "loggedIn"

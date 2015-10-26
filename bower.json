@@ -16,6 +16,7 @@
     "moment": ">= 2.8.0",
     "moment-timezone": ">= 0.1.0",
     "eonasdan-bootstrap-datetimepicker": "~4.14.30",
-    "bootbox.js": "~4.4.0"
+    "bootbox.js": "~4.4.0",
+    "appkit": "~0.0.1"
   }
 }

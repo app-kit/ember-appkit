@@ -28,13 +28,13 @@ export default DS.Model.extend({
 	relatedFiles: DS.hasMany("file", {async: false, inverse: "parentFile"}),
 
 	url: Ember.computed("id", "fullName", function() {
-		var id = this.get("id");
+		let id = this.get("id");
 		if (!id) {
 			return null;
 		}
 
-		var host = this.container.lookup("service:appkit").get("host");
-		var url = host + "/files/" + id + "/" + this.get("fullName");
+		let host = this.container.lookupFactory("config:environment").appkit.apiHost;
+		let url = "http://" + host + "/files/" + id + "/" + this.get("fullName");
 
 		return url;
 	}),
@@ -45,8 +45,8 @@ export default DS.Model.extend({
 			return null;
 		}
 
-		let host = this.container.lookup("service:appkit").get("host");
-		let url = host + "/images/" + id + "/" + this.get("fullName");
+		let host = this.container.lookupFactory("config:environment").appkit.apiHost;
+		let url = "http://" + host + "/images/" + id + "/" + this.get("fullName");
 
 		url += `?width=${width}&height=${height}`;
 
